@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "583596975709",
+    "firebase_url": "https://transportal-77a17.firebaseio.com",
+    "project_id": "transportal-77a17",
+    "storage_bucket": "transportal-77a17.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583596975709:android:e2346d11a0b6737f",
+        "android_client_info": {
+          "package_name": "com.example.mohammed.transportal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583596975709-kb7so0ojuh4905cv4njafu5ugiloukaq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mohammed.transportal",
+            "certificate_hash": "84b7ea675e5e5bc6dbe230ca7e7e3f8f8fe15bba"
+          }
+        },
+        {
+          "client_id": "583596975709-kq5rqe3i749oekoe6v4kgicv9aueumhg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcbjO8ZuAGkr0vxMrLiydQ5wZPwS-lY9U"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583596975709-kq5rqe3i749oekoe6v4kgicv9aueumhg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
