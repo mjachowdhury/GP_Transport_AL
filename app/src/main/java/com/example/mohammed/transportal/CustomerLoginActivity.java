@@ -17,7 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class VehicleLoginActivity extends AppCompatActivity {
+public class CustomerLoginActivity extends AppCompatActivity {
 
     //calling edit text and button
     private EditText mEmail, mPassword;
@@ -47,7 +47,7 @@ public class VehicleLoginActivity extends AppCompatActivity {
                 //in order to move forward we need to user loged in and also its listening user logout
                 if( user != null ){
                     //creating Intent this will take to the login and registration page
-                    Intent intent = new Intent(VehicleLoginActivity.this, MapActivity.class);
+                    Intent intent = new Intent(CustomerLoginActivity.this, MapActivity.class);
                     startActivity(intent);
                     finish();
                     return;
@@ -76,17 +76,17 @@ public class VehicleLoginActivity extends AppCompatActivity {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
 
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(VehicleLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         //if sign is not successful then it will show a text message in the screen
                         if (!task.isSuccessful()){
-                            Toast.makeText(VehicleLoginActivity.this,"Sign Up Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CustomerLoginActivity.this,"Sign Up Error", Toast.LENGTH_SHORT).show();
                         }else{
                             //if its successful then we are getting the current user id
                             String user_id = mAuth.getCurrentUser().getUid();
                             //creating database reference
-                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Vehicles").child(user_id);
+                            DatabaseReference current_user_db = FirebaseDatabase.getInstance().getReference().child("Users").child("Customer").child(user_id);
                             current_user_db.setValue(true);
                         }
                     }
@@ -102,11 +102,11 @@ public class VehicleLoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String email = mEmail.getText().toString();
                 final String password = mPassword.getText().toString();
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(VehicleLoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(CustomerLoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (!task.isSuccessful()){
-                            Toast.makeText(VehicleLoginActivity.this,"Sign In Error", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CustomerLoginActivity.this,"Sign In Error", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

@@ -33,5 +33,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        mCustomer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //creating Intent this will take to the login and registration page
+                Intent intent = new Intent(MainActivity.this, CustomerLoginActivity.class);
+                startActivity(intent);
+                finish();
+                return;
+            }
+        });
+
     }
 }
