@@ -47,7 +47,7 @@ public class VehicleLoginActivity extends AppCompatActivity {
                 //in order to move forward we need to user loged in and also its listening user logout
                 if( user != null ){
                     //creating Intent this will take to the login and registration page
-                    Intent intent = new Intent(VehicleLoginActivity.this, MapActivity.class);
+                    Intent intent = new Intent(VehicleLoginActivity.this, VehicleMapActivity.class);
                     startActivity(intent);
                     finish();
                     return;
