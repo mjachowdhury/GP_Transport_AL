@@ -4,11 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,10 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-
-
-
-public class VehicleMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
+public class CustomerMapActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
 
     private GoogleMap mMap;
     GoogleApiClient mGoogleApiClient;
@@ -41,7 +38,9 @@ public class VehicleMapActivity extends FragmentActivity implements OnMapReadyCa
     LocationRequest mLocationRequest;
 
     private SupportMapFragment mapFragment;
-    private Button mLogout;
+    private Button mLogout, mRequest;
+
+    private LatLng pickupLocation;
 
 
     /**
@@ -51,33 +50,54 @@ public class VehicleMapActivity extends FragmentActivity implements OnMapReadyCa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vehicle_map);
+        setContentView(R.layout.activity_customer_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //return;
-            ActivityCompat.requestPermissions(VehicleMapActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         } else {
             mapFragment.getMapAsync(this);
         }
 
 
+
+        mLogout = (Button) findViewById(R.id.logout);
+        mRequest = (Button) findViewById(R.id.request);
+
         /**
          * here how to logout either vehicle or customer and go to the main page
          */
-        mLogout = (Button) findViewById(R.id.logout);
+        //setting on click listner
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FirebaseAuth.getInstance().signOut();
                 //after signout vehicle or customer will go to the MAinActivity or maon page
                 //so we have to create a INtent for that
-                Intent intent = new Intent(VehicleMapActivity.this, MainActivity.class);
+                Intent intent = new Intent(CustomerMapActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                 return;
+            }
+        });
+
+        mRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("customerRequest");
+                GeoFire geoFire = new GeoFire(reference);
+                geoFire.setLocation(userId, new GeoLocation(mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+
+                //setting the marker
+                pickupLocation = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+                mMap.addMarker(new MarkerOptions().position(pickupLocation).title("Pickup me Here"));
+
+                mRequest.setText("Getting your Vehicle ready....");
             }
         });
     }
@@ -144,17 +164,8 @@ public class VehicleMapActivity extends FragmentActivity implements OnMapReadyCa
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             mMap.animateCamera(CameraUpdateFactory.zoomTo(11));// it can be 1 - 21
 
-            //that will get the current user id from the database
-            String vehicleId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-            //getting the reference from the database
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("VehicleAvailable");
-
-            //getting the GeoFire
-            //vehicleId is stored in the database from VehicleAvailable
-            GeoFire geoFire = new GeoFire(reference);
-            geoFire.setLocation(vehicleId, new GeoLocation(location.getLatitude(),location.getLongitude()));
-
         }
+
     }
 
 
@@ -170,7 +181,7 @@ public class VehicleMapActivity extends FragmentActivity implements OnMapReadyCa
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             //return;
-            ActivityCompat.requestPermissions(VehicleMapActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(CustomerMapActivity.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
         //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
 
@@ -214,11 +225,6 @@ public class VehicleMapActivity extends FragmentActivity implements OnMapReadyCa
     protected void onStop(){
         super.onStop();
 
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("VehicleAvailable");
 
-        GeoFire geoFire = new GeoFire(reference);
-        //here we are removing the location for the user
-        geoFire.removeLocation(userId);
     }
 }
